@@ -21,7 +21,7 @@ def add_documents(documents: list[Document]):
         # Validate input
         if not documents:
             logger.warning("No documents provided to add_documents")
-            raise Exception("No documents provided to add")
+            raise ValueError("No documents provided to add")
         
         # Split documents into chunks
         text_splitter = RecursiveCharacterTextSplitter(
