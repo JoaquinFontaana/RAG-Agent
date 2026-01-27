@@ -8,3 +8,4 @@ class AgentState(MessagesState):
     retrieved_docs: list[Document]
     error:str
     response:str
+    human_active:bool
