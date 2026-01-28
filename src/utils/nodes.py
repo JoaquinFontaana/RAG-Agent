@@ -82,31 +82,27 @@ def generate_response(state: AgentState):
         llm = get_llm()
         docs = state.get("retrieved_docs", [])
 
-        # Construir mensajes para el LLM
-        messages = []
-        
-        # 1. System message con contexto RAG si existe
-        system_content = "You are a helpful customer support assistant."
+        # Preparar contexto
         if docs:
             context = "\n\n".join([doc.page_content for doc in docs])
-            system_content += f"\n\nUse this context to answer:\n{context}"
             logger.info(f"Generating response with {len(docs)} retrieved documents")
         else:
+            context = "No additional context available."
             logger.info("Generating response without retrieved documents")
         
-        messages.append(SystemMessage(content=system_content))
+        # Usar template con historial
+        chain = ANSWER_PROMPT | llm
         
-        # 2. Agregar HISTORIAL COMPLETO de conversación
-        messages.extend(state["messages"])
-        
-        # 3. Invocar LLM con todo el contexto
-        response = llm.invoke(messages).content
+        response = chain.invoke({
+            "context": context,
+            "history": state["messages"]  
+        }).content
         
         logger.info("Response generated successfully")
         
         return {
             "response": response,
-            "messages": [AIMessage(content=response)]  # Se agrega al historial
+            "messages": [AIMessage(content=response)]
         }
     
     except Exception as ex:

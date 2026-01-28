@@ -1,4 +1,4 @@
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from pydantic import BaseModel, Field
 from typing import Literal
 class ClassificationOutput(BaseModel):
@@ -43,7 +43,7 @@ CLASSIFICATOR_PROMPT = ChatPromptTemplate([
 ANSWER_PROMPT = ChatPromptTemplate.from_messages([
     ("system", """You are a friendly, efficient, and clear Customer Support Specialist for an online service.
     
-    Your goal is to answer the user's question using ONLY the provided context below.
+    Your goal is to answer the user's question using the conversation history and the provided context below.
     
     **Guidelines for your response:**
     1. **Tone:** Be warm, empathetic, and professional. Use phrases like "I'd be happy to help with that" or "Here is the information you need."
@@ -55,5 +55,5 @@ ANSWER_PROMPT = ChatPromptTemplate.from_messages([
     **Context:**
     {context}
     """),
-    ("user", "{query}")
+    MessagesPlaceholder(variable_name="history"), 
 ])

@@ -21,7 +21,7 @@ def get_workflow():
 
     # ========== NODOS ==========
     workflow.add_node(classification_query)
-    workflow.add_node("retrieve", retrieve, retry_policy=RetryPolicy())
+    workflow.add_node(retrieve, retry_policy=RetryPolicy())
     workflow.add_node(generate_response)
     workflow.add_node( handle_classification_error)
     workflow.add_node(handle_technical_error)
@@ -50,3 +50,5 @@ def get_workflow():
     checkpointer = MemorySaver()
 
     return workflow.compile(checkpointer)
+
+app = get_workflow()
