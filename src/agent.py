@@ -1,6 +1,6 @@
 from langgraph.types import RetryPolicy
 from langgraph.graph import START, END, StateGraph
-from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.postgres import PostgresSaver
 from functools import lru_cache
 from src.utils import (
     AgentState,
@@ -16,7 +16,7 @@ from src.utils import (
     OutputState,
     InputState
 )
-
+from .db import get_connection_pool
 @lru_cache()
 def get_workflow():
     workflow = StateGraph(AgentState,output_schema=OutputState,input_schema=InputState)
@@ -64,6 +64,8 @@ def get_workflow():
     workflow.add_edge("handle_technical_error", END)
     workflow.add_edge("handle_classification_error", END)
     
-    checkpointer = MemorySaver()
+    pool = get_connection_pool()
 
+    checkpointer = PostgresSaver(pool)
+    checkpointer.setup()
     return workflow.compile(checkpointer=checkpointer)

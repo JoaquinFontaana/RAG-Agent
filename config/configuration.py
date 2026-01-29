@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
-from typing import Literal, Optional
+from pydantic import computed_field
 from functools import lru_cache
 import os
 
@@ -20,8 +20,15 @@ class BaseConfig(BaseSettings):
         case_sensitive=False,
         extra="ignore"
     )
+    postgres_password:str
+    postgres_host:str
+    postgres_user:str
+    postgres_db:str
+    postgres_port:int = 5432
 
-
+    @computed_field
+    def postgres_uri(self) -> str:
+        return f"postgresql://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
 class DevelopmentConfig(BaseConfig):
     """Configuración para desarrollo"""
     debug: bool = True
