@@ -3,5 +3,6 @@
     "graphs": {
         "agent": "src.agent:get_workflow"
     },
-    "env": ".env"
+    "env": ".env",
+    "custom_endpoints": "src.custom_endpoints:router"
 }

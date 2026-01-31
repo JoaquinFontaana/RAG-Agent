@@ -1,10 +1,16 @@
-from fastapi import FastAPI,UploadFile
-from fastapi.responses import JSONResponse
-from rag.store import ingest_file
+"""Local development server with custom endpoints"""
+from fastapi import FastAPI
+from src.custom_endpoints import router
+from src.app_config import configure_app
+
 app = FastAPI()
 
-@app.post("/documents")
-def add_document(file:UploadFile):
-    ingest_file(file)
-    return JSONResponse(content="File uploaded sucessfull",status_code=201)
-    
+# Configure app (exception handlers, middleware, etc.)
+configure_app(app)
+
+# Include custom endpoints
+app.include_router(router, prefix="/api")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

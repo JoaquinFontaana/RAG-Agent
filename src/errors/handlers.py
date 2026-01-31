@@ -1,14 +1,13 @@
-from fastapi import Request, status
+from fastapi import Request, status, FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from src.errors.exceptions import BaseAppException
 import logging
-from src.server import app
+
 logger = logging.getLogger(__name__)
 
 # 1. Handler para TUS errores de lógica
-@app.exception_handler(BaseAppException)
 async def app_exception_handler(request: Request, exc: BaseAppException):
     return JSONResponse(
         status_code=exc.status_code,
@@ -23,7 +22,6 @@ async def app_exception_handler(request: Request, exc: BaseAppException):
     )
 
 # 2. Handler para errores HTTP estándar de FastAPI (404, 401, etc)
-@app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     return JSONResponse(
         status_code=exc.status_code,
@@ -37,7 +35,6 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     )
 
 # Handler para validaciones de Pydantic (Datos mal enviados)
-@app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     errors = []
     for error in exc.errors():
@@ -58,7 +55,6 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 #Handler GENÉRICO 
-@app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
     # Logueamos el error real en el servidor para que tú lo veas
     logger.error(f"Error no controlado: {str(exc)}", exc_info=True)
@@ -73,3 +69,11 @@ async def general_exception_handler(request: Request, exc: Exception):
             }
         }
     )
+
+# Setup function to register all handlers
+def setup_exception_handlers(app: FastAPI) -> None:
+    """Register all exception handlers to the FastAPI app"""
+    app.add_exception_handler(BaseAppException, app_exception_handler)  # type: ignore
+    app.add_exception_handler(StarletteHTTPException, http_exception_handler)  # type: ignore
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)  # type: ignore
+    app.add_exception_handler(Exception, general_exception_handler)  # type: ignore

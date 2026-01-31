@@ -2,6 +2,8 @@ from langgraph.types import RetryPolicy
 from langgraph.graph import START, END, StateGraph
 from langgraph.checkpoint.postgres import PostgresSaver
 from functools import lru_cache
+from .models.ChatRequest import ChatRequest
+from langchain_core.messages import HumanMessage
 from src.utils import (
     AgentState,
     handle_classification_error,
@@ -69,3 +71,16 @@ def get_workflow():
     checkpointer = PostgresSaver(pool)
     checkpointer.setup()
     return workflow.compile(checkpointer=checkpointer)
+
+def invoke_workflow(request: ChatRequest):
+    workflow = get_workflow()
+    
+    input_data: InputState = { 
+        "user_query": request.user_query,
+        "messages": [HumanMessage(content=request.user_query)]
+    }
+    
+    return workflow.invoke(
+        input_data,
+        config={"configurable": {"thread_id": request.thread_id}}
+    )
