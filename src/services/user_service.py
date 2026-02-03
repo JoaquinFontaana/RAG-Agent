@@ -29,6 +29,13 @@ class UserService:
             raise HTTPException(status_code=404,detail="The user doesnt exists")
         return user
     
+    def find_by_email(self,email:str) -> User:
+        with Session(engine) as session:
+            user = session.exec(select(User).where(User.email == email)).first()
+        if not user:
+            raise HTTPException(status_code=404,detail="The user doesnt exists")
+        return user
+
     def exist_by_email(self, email: str) -> bool:
         with Session(engine) as session:
             return session.exec(select(User).where(User.email == email)).first() is not None

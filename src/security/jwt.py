@@ -5,7 +5,7 @@ from config.configuration import settings
 from fastapi import HTTPException, status
 from src.models.token_payload import TokenPayload
 
-def create_access_token(data: TokenPayload, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(data: Dict[str,Any], expires_delta: Optional[timedelta] = None) -> str:
     """
     Generate a JWT access token.
     
