@@ -22,4 +22,5 @@ dependencies = [
     "psycopg-pool>=3.3.0",
     "pydantic-settings>=2.12.0",
     "redis>=6.4.0",
+    "sqlmodel>=0.0.32",
 ]

@@ -5,7 +5,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.cache.memory import InMemoryCache
 from functools import lru_cache
 import os
-from src.models.ChatRequest import ChatRequest
+from src.models.chat_request import ChatRequest
 from langchain_core.messages import HumanMessage
 from src.utils import (
     AgentState,

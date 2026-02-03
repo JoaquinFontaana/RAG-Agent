@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from src.models.ChatRequest import ChatRequest
+from src.models.chat_request import ChatRequest
 from src.agent import invoke_workflow
 
 router = APIRouter(

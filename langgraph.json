@@ -7,5 +7,8 @@
     "http": {
         "app":"./src/server.py:app"
     },
-    "image_distro": "wolfi"
+    "image_distro": "wolfi",
+    "auth":{
+        "path":"./src/security/auth.py"   
+    }
 }
