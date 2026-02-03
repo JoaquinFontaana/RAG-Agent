@@ -6,5 +6,5 @@ class RoleEnum(Enum):
 
 class Role(SQLModel):
     id: int | None = Field(primary_key=True,default=None)
-    name:str
+    name:str = Field(unique=True)
 

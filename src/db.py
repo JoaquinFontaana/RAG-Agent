@@ -34,6 +34,6 @@ def get_cache():
 # Use postgresql+psycopg dialect for psycopg3
 engine = create_engine(settings.postgres_uri.replace("postgresql://", "postgresql+psycopg://"),echo=True)
 
-from src.models import entities
-
-SQLModel.metadata.create_all(engine)
+def create_db_and_tables():
+    from src.models import entities
+    SQLModel.metadata.create_all(engine)

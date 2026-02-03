@@ -1,7 +1,15 @@
 """Local development server with custom endpoints"""
 from fastapi import FastAPI
-from src.custom_endpoints import router
 from src.app_config import configure_app
+from fastapi import APIRouter
+from src.controllers.document_controller import router as documents_router
+from src.controllers.chat_controller import router as chats_router
+
+# Main router that combines all coontrollers
+router = APIRouter()
+
+router.include_router(documents_router)
+router.include_router(chats_router)
 
 app = FastAPI()
 
